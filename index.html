@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Soto Lamongan - Premium</title>
+<!-- Menggunakan Font Google (Poppins) -->
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+<style>
+  /* === PENGATURAN WARNA (LIGHT & DARK MODE) === */
+  :root {
+    --primary: #D32F2F; 
+    --secondary: #F57C00; 
+    --bg-color: #FFFDF9; 
+    --text-color: #2C1E16;
+    --card-bg: #FFFFFF;
+    --nav-bg: rgba(255, 255, 255, 0.85);
+    --border-color: #FFF0F0;
+    --shadow: rgba(0,0,0,0.04);
+  }
+
+  /* Variabel Warna saat Dark Mode aktif */
+  body.dark-mode {
+    --bg-color: #121212; 
+    --text-color: #E0E0E0;
+    --card-bg: #1E1E1E;
+    --nav-bg: rgba(18, 18, 18, 0.85);
+    --border-color: #333333;
+    --shadow: rgba(0,0,0,0.5);
+  }
+
+  * { margin:0; padding:0; box-sizing:border-box; font-family: 'Poppins', sans-serif; }
+  
+  body { 
+    background-color: var(--bg-color); 
+    color: var(--text-color); 
+    line-height:1.7; 
+    overflow-x: hidden; 
+    padding-top: 80px; /* Jarak aman untuk menu */
+    transition: background-color 0.4s ease, color 0.4s ease;
+    min-height: 100vh; /* Memastikan halaman bisa di-scroll */
+  }
+  
+  /* Navigasi Modern (Glassmorphism) */
+  nav {
+    position: fixed; top: 0; left: 0; width: 100%; z-index: 1000;
+    background: var(--nav-bg);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    box-shadow: 0 4px 20px var(--shadow);
+    display: flex; justify-content: center; align-items: center; flex-wrap: wrap; gap: 8px;
+    padding: 12px 15px;
+    transition: background 0.4s ease;
+  }
+  
+  nav button {
+    background: transparent; border: none; font-size: 0.9rem; font-weight: 600;
+    color: var(--text-color); cursor: pointer; padding: 8px 16px; border-radius: 30px;
+    transition: all 0.3s ease;
+  }
+  
+  nav button:hover { color: var(--primary); background: rgba(211, 47, 47, 0.1); }
+  
+  /* Tombol menu yang sedang aktif */
+  nav button.active { background: var(--primary); color: white; box-shadow: 0 4px 10px rgba(211, 47, 47, 0.3); }
+  
+  #btn-bahasa {
+    background: var(--secondary); color: white; padding: 8px 16px;
+  }
+  #btn-bahasa:hover { background: #E65100; color: white; }
+
+  /* Tombol Mode (Gelap/Terang) */
+  #btn-mode {
+    background: #555; color: white; padding: 8px 12px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+  }
+  #btn-mode:hover { background: #333; }
+
+  /* Header */
+  header {
+    background: linear-gradient(135deg, #D32F2F 0%, #F57C00 100%);
+    color: white; padding: 60px 20px; text-align: center;
+    border-radius: 0 0 30px 30px;
+    box-shadow: 0 10px 30px rgba(211, 47, 47, 0.2);
+    margin-bottom: 30px;
+  }
+  header h1 { font-size: 2.2rem; font-weight: 700; margin-bottom: 10px; letter-spacing: 1px; }
+  header p { font-size: 1rem; font-weight: 300; opacity: 0.9; }
+
+  .container { max-width: 900px; margin: 0 auto; padding: 0 20px 60px 20px; }
+  
+  /* Halaman */
+  .halaman { display: none; }
+  .halaman-aktif { display: block; }
+
+  /* Bingkai Foto Modern */
+  .bingkai-foto {
+    background: var(--card-bg); padding: 12px; border-radius: 20px;
+    box-shadow: 0 10px 30px var(--shadow);
+    margin: 0 auto 30px auto; max-width: 600px;
+    transition: transform 0.4s ease, background 0.4s ease;
+  }
+  .bingkai-foto:hover { transform: translateY(-5px); }
+
+  .foto-soto { width: 100%; height: 350px; object-fit: cover; border-radius: 12px; display: block; }
+  .foto-resep { width: 100%; height: auto; border-radius: 12px; display: block; }
+
+  /* Kartu Konten */
+  .card {
+    background: var(--card-bg); border-radius: 20px; padding: 30px;
+    box-shadow: 0 8px 25px var(--shadow); margin-bottom: 25px;
+    transition: transform 0.3s ease, box-shadow 0.3s ease, background 0.4s ease;
+  }
+  .card:hover { transform: translateY(-3px); box-shadow: 0 12px 35px var(--shadow); }
+  
+  h2 { color: var(--primary); margin-bottom: 15px; font-size: 1.5rem; font-weight: 600; text-align: center; }
+  h3 { color: var(--secondary); margin-top: 25px; margin-bottom: 12px; font-size: 1.15rem; font-weight: 600; border-bottom: 2px solid var(--border-color); padding-bottom: 8px;}
+  
+  ul, ol { padding-left: 20px; margin-bottom: 15px; color: var(--text-color); }
+  li { margin-bottom: 8px; font-size: 0.95rem; }
+  
+  footer { text-align: center; padding: 30px; color: #888; font-size: 0.85rem; font-weight: 300; }
+  
+  /* Video */
+  .video-container {
+    position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden;
+    border-radius: 16px; margin-top: 20px; box-shadow: 0 8px 25px var(--shadow);
+  }
+  .video-container iframe {
+    position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: none;
+  }
+</style>
+</head>
+<body>
+
+<!-- MENU NAVIGASI -->
+<nav>
+  <button id="nav-beranda" class="active" onclick="bukaHalaman('beranda')" data-id="🏠 Beranda" data-en="🏠 Home">🏠 Beranda</button>
+  <button id="nav-sejarah" onclick="bukaHalaman('sejarah')" data-id="📖 Sejarah" data-en="📖 History">📖 Sejarah</button>
+  <button id="nav-resep" onclick="bukaHalaman('resep')" data-id="🍳 Resep" data-en="🍳 Recipe">🍳 Resep</button>
+  <button id="nav-video" onclick="bukaHalaman('video')" data-id="🎥 Video" data-en="🎥 Video">🎥 Video</button>
+  <button onclick="gantiBahasa()" id="btn-bahasa">🌐 EN</button>
+  <button onclick="toggleMode()" id="btn-mode">🌙</button>
+</nav>
+
+<header>
+  <h1>Soto Lamongan</h1>
+  <p data-id="Kuah gurih, bumbu koya khas, siap hangatkan harimu" data-en="Savory broth, authentic koya spice, ready to warm up your day">Kuah gurih, bumbu koya khas, siap hangatkan harimu</p>
+</header>
+
+<div class="container">
+
+  <!-- ================= HALAMAN 1: BERANDA ================= -->
+  <div id="beranda" class="halaman halaman-aktif">
+    <div class="bingkai-foto">
+      <img src="https://i.ibb.co.com/9k2Z1DrS/IMG-20261120-WA0013.jpg" alt="Soto Lamongan 1" class="foto-soto">
+    </div>
+
+    <div class="card">
+      <h2 data-id="Tentang Soto Lamongan" data-en="About Soto Lamongan">Tentang Soto Lamongan</h2>
+      <p data-id="Soto Lamongan adalah kuliner khas Jawa Timur dengan ciri khas <strong>bumbu koya</strong> — campuran kerupuk udang yang dihaluskan. Kuahnya bening kekuningan, disajikan dengan suwiran ayam, telur rebus, soun, dan kucurkan perasan jeruk nipis." 
+         data-en="Soto Lamongan is a traditional culinary dish from East Java, famous for its <strong>koya spice</strong> — a mixture of ground shrimp crackers. It features a clear yellowish broth, served with shredded chicken, boiled eggs, vermicelli, and a squeeze of lime.">
+         Soto Lamongan adalah kuliner khas Jawa Timur dengan ciri khas <strong>bumbu koya</strong> — campuran kerupuk udang yang dihaluskan. Kuahnya bening kekuningan, disajikan dengan suwiran ayam, telur rebus, soun, dan kucurkan perasan jeruk nipis.
+      </p>
+    </div>
+  </div>
+
+  <!-- ================= HALAMAN 2: SEJARAH ================= -->
+  <div id="sejarah" class="halaman">
+    <div class="bingkai-foto">
+      <img src="https://i.ibb.co.com/21k4Kc1d/IMG-20261120-WA0014.jpg" alt="Soto Lamongan 2" class="foto-soto">
+    </div>
+
+    <div class="card">
+      <h2 data-id="Sejarah Soto Lamongan" data-en="History of Soto Lamongan">Sejarah Soto Lamongan</h2>
+      <p data-id="Soto Lamongan adalah hidangan berkuah kuning khas Jawa Timur yang lahir dari akulturasi budaya dan menyebar luas berkat tradisi merantau masyarakatnya. Hidangan ini berakar dari sup Tionghoa bernama <em>caudo</em> yang dibawa imigran pada abad ke-19, lalu berpadu dengan kekayaan rempah lokal Jawa seperti kunyit dan serai serta sentuhan bahan Eropa seperti kubis dan seledri." 
+         data-en="Soto Lamongan is a signature yellow-broth dish from East Java that was born from cultural acculturation and spread widely thanks to the local tradition of migrating. The dish is rooted in a Chinese soup called <em>caudo</em> brought by immigrants in the 19th century, which then blended with the rich local Javanese spices like turmeric and lemongrass, along with a touch of European ingredients such as cabbage and celery.">
+         Soto Lamongan adalah hidangan berkuah kuning khas Jawa Timur yang lahir dari akulturasi budaya dan menyebar luas berkat tradisi merantau masyarakatnya. Hidangan ini berakar dari sup Tionghoa bernama <em>caudo</em> yang dibawa imigran pada abad ke-19, lalu berpadu dengan kekayaan rempah lokal Jawa seperti kunyit dan serai serta sentuhan bahan Eropa seperti kubis dan seledri.
+      </p>
+      <br>
+      <p data-id="Secara historis, tradisi berjualan soto ini berawal dari kawasan Kecamatan Deket, Lamongan, di mana para pedagang menjajakannya secara keliling dengan cara dipikul sebelum akhirnya menyebar ke berbagai kota besar di Indonesia melalui gelombang perantau pada era 1980-an hingga 1990-an." 
+         data-en="Historically, the tradition of selling this soto started in the Deket District area of Lamongan, where vendors used to sell it around by carrying it on their shoulders, before it eventually spread to various major cities in Indonesia through waves of migrants in the 1980s to 1990s.">
+         Secara historis, tradisi berjualan soto ini berawal dari kawasan Kecamatan Deket, Lamongan, di mana para pedagang menjajakannya secara keliling dengan cara dipikul sebelum akhirnya menyebar ke berbagai kota besar di Indonesia melalui gelombang perantau pada era 1980-an hingga 1990-an.
+      </p>
+      <br>
+      <p data-id="Kini, kuliner yang terkenal dengan taburan bubuk koya gurih ini telah menjadi ikon kuliner nasional dan resmi tercatat sebagai Kekayaan Intelektual Komunal (KIK) pada Mei 2026." 
+         data-en="Today, this culinary delight, famous for its savory koya powder topping, has become a national culinary icon and was officially recorded as Communal Intellectual Property (KIK) in May 2026.">
+         Kini, kuliner yang terkenal dengan taburan bubuk koya gurih ini telah menjadi ikon kuliner nasional dan resmi tercatat sebagai Kekayaan Intelektual Komunal (KIK) pada Mei 2026.
+      </p>
+    </div>
+  </div>
+
+  <!-- ================= HALAMAN 3: RESEP ================= -->
+  <div id="resep" class="halaman">
+    <div class="bingkai-foto">
+      <img id="gambar-resep" src="https://i.ibb.co.com/JR9bMHbN/IMG-20261123-WA0002.jpg" alt="Resep Soto Lamongan" class="foto-resep">
+    </div>
+
+    <div class="card">
+      <h3 data-id="1. Bahan - Bahan :" data-en="1. Ingredients:">1. Bahan - Bahan :</h3>
+      <ul>
+        <li data-id="Bawang merah (7-10 siung)" data-en="Shallots (7-10 cloves)">Bawang merah (7-10 siung)</li>
+        <li data-id="Bawang putih (5-10 siung)" data-en="Garlic (5-10 cloves)">Bawang putih (5-10 siung)</li>
+        <li data-id="Kemiri (4-7 butir, biasanya disangrai terlebih dahulu)" data-en="Candlenuts (4-7 pieces, usually roasted first)">Kemiri (4-7 butir, biasanya disangrai terlebih dahulu)</li>
+        <li data-id="Kunyit (1 ruas sebaiknya dibakar atau disangrai dulu agar tidak langu)" data-en="Turmeric (1 thumb, preferably grilled or roasted first to remove the earthy smell)">Kunyit (1 ruas sebaiknya dibakar atau disangrai dulu agar tidak langu)</li>
+        <li data-id="Jahe (1 ruas)" data-en="Ginger (1 thumb)">Jahe (1 ruas)</li>
+        <li data-id="Ketumbar (1 sdt)" data-en="Coriander (1 tsp)">Ketumbar (1 sdt)</li>
+        <li data-id="Merica atau Lada (1 sdt)" data-en="Pepper (1 tsp)">Merica atau Lada (1 sdt)</li>
+        <li data-id="Jinten (sejumput / ¼ - ¾ sdt)" data-en="Cumin (a pinch / ¼ - ¾ tsp)">Jinten (sejumput / ¼ - ¾ sdt)</li>
+        <li data-id="Biji pala (sedikit atau opsional)" data-en="Nutmeg (a little or optional)">Biji pala (sedikit atau opsional)</li>
+      </ul>
+
+      <h3 data-id="Bumbu Cemplung (Aromatik)" data-en="Whole Spices (Aromatics)">Bumbu Cemplung (Aromatik)</h3>
+      <ul>
+        <li data-id="Serai (2 batang, digeprek)" data-en="Lemongrass (2 stalks, bruised)">Serai (2 batang, digeprek)</li>
+        <li data-id="Daun salam (2-3 lembar)" data-en="Bay leaves (2-3 leaves)">Daun salam (2-3 lembar)</li>
+        <li data-id="Daun jeruk (4-12 lembar, disobek)" data-en="Kaffir lime leaves (4-12 leaves, torn)">Daun jeruk (4-12 lembar, disobek)</li>
+        <li data-id="Lengkuas (3-4 cm, digeprek)" data-en="Galangal (3-4 cm, bruised)">Lengkuas (3-4 cm, digeprek)</li>
+      </ul>
+
+      <h3 data-id="Bahan Tambahan :" data-en="Additional Ingredients:">Bahan Tambahan :</h3>
+      <ul>
+        <li data-id="Ayam (¼ - ½ kg)" data-en="Chicken (¼ - ½ kg)">Ayam (¼ - ½ kg)</li>
+        <li data-id="Kol/kubis (iris tipis)" data-en="Cabbage (thinly sliced)">Kol/kubis (iris tipis)</li>
+        <li data-id="Tauge (direbus)" data-en="Bean sprouts (boiled)">Tauge (direbus)</li>
+        <li data-id="Soun (direbus)" data-en="Vermicelli (boiled)">Soun (direbus)</li>
+        <li data-id="Telur rebus (belah jadi dua)" data-en="Boiled eggs (cut in half)">Telur rebus (belah jadi dua)</li>
+        <li data-id="Bawang goreng" data-en="Fried shallots">Bawang goreng</li>
+        <li data-id="Jeruk nipis" data-en="Lime">Jeruk nipis</li>
+        <li data-id="Bubuk koya: Kerupuk udang digoreng lalu dihaluskan bersama bawang putih goreng" data-en="Koya powder: Fried shrimp crackers ground with fried garlic">Bubuk koya: Kerupuk udang digoreng lalu dihaluskan bersama bawang putih goreng</li>
+      </ul>
+
+      <h3 data-id="2. Cara Pembuatan :" data-en="2. Instructions:">2. Cara Pembuatan :</h3>
+      <ol>
+        <li data-id="Rebus ayam di panci hingga empuk." data-en="Boil chicken in a pot until tender.">Rebus ayam di panci hingga empuk.</li>
+        <li data-id="Haluskan bumbu halus, lalu tumis bersama serai." data-en="Grind the ground spices, then sauté with lemongrass.">Haluskan bumbu halus, lalu tumis bersama serai.</li>
+        <li data-id="Masukkan tumisan bumbu ke dalam rebusan ayam." data-en="Add the sautéed spices to the chicken broth.">Masukkan tumisan bumbu ke dalam rebusan ayam.</li>
+        <li data-id="Tambahkan garam, gula, merica, kaldu bubuk serta irisan daun bawang dan seledri." data-en="Add salt, sugar, pepper, bouillon powder, and sliced green onions and celery.">Tambahkan garam, gula, merica, kaldu bubuk serta irisan daun bawang dan seledri.</li>
+        <li data-id="Masak hingga meresap, lalu angkat ayam yg sudah direbus kemudian disuwir - suwir." data-en="Cook until the flavors are absorbed, then remove the boiled chicken and shred it.">Masak hingga meresap, lalu angkat ayam yg sudah direbus kemudian disuwir - suwir.</li>
+        <li data-id="Tata lengkap (soun, kol, tauge, telur, dan ayam suwir) di dalam mangkuk. Lalu, siram dengan kuah soto panas, lalu taburi bawang goreng dan berikan perasan jeruk nipis." data-en="Arrange the toppings (vermicelli, cabbage, bean sprouts, egg, and shredded chicken) in a bowl. Then, pour the hot soto broth over it, sprinkle with fried shallots, and add a squeeze of lime.">Tata lengkap (soun, kol, tauge, telur, dan ayam suwir) di dalam mangkuk. Lalu, siram dengan kuah soto panas , lalu taburi bawang goreng dan berikan perasan jeruk nipis.</li>
+      </ol>
+    </div>
+  </div>
+
+  <!-- ================= HALAMAN 4: VIDEO ================= -->
+  <div id="video" class="halaman">
+    <div class="bingkai-foto">
+      <img src="https://i.ibb.co.com/mVpLbtn5/IMG-20261120-WA0015.jpg" alt="Soto Lamongan 4" class="foto-soto">
+    </div>
+
+    <div class="card">
+      <h2 data-id="Video Cara Membuat" data-en="How to Make Video">Video Cara Membuat</h2>
+      <p data-id="Simak video tutorial membuat Soto Lamongan di bawah ini:" data-en="Watch the video tutorial on how to make Soto Lamongan below:">Simak video tutorial membuat Soto Lamongan di bawah ini:</p>
+      <div class="video-container">
+        <iframe src="https://www.youtube.com/embed/YwcE756muLg" title="YouTube video player" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<footer>
+  <span data-id="&copy; 2026 Soto Lamongan — Dibuat dengan ❤️" data-en="&copy; 2026 Soto Lamongan — Made with ❤️">&copy; 2026 Soto Lamongan — Dibuat dengan ❤️</span>
+</footer>
+
+<!-- LIBRARY ANIMASI -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/studio-freight/lenis@1.0.19/bundled/lenis.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/motion@10.16.2/dist/motion.min.js"></script>
+
+<script>
+  // 1. Inisialisasi Lenis untuk Smooth Scroll (Biar gulirannya empuk)
+  const lenis = new Lenis({
+    duration: 1.2,
+    easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+    smooth: true,
+  });
+
+  lenis.on('scroll', ScrollTrigger.update);
+  gsap.ticker.add((time) => {
+    lenis.raf(time * 1000);
+  });
+  gsap.ticker.lagSmoothing(0);
+
+  // 2. Daftarkan plugin GSAP
+  gsap.registerPlugin(ScrollTrigger);
+
+  // 3. Fungsi Animasi GSAP
+  function initAnimasiScroll() {
+    var elemenAnimasi = document.querySelectorAll('.card, .bingkai-foto');
+    
+    elemenAnimasi.forEach(function(elemen) {
+      gsap.fromTo(elemen, 
+        { y: 40, opacity: 0 },
+        { 
+          y: 0, opacity: 1,
+          duration: 0.8, 
+          ease: "power2.out",
+          scrollTrigger: {
+            trigger: elemen,
+            start: "top 90%",
+            toggleActions: "play none none none"
+          }
+        }
+      );
+    });
+  }
+
+  initAnimasiScroll();
+
+  // 4. Fungsi Pindah Halaman
+  function bukaHalaman(namaHalaman) {
+    var semuaHalaman = document.querySelectorAll('.halaman');
+    var semuaTombol = document.querySelectorAll('nav button');
+    
+    semuaHalaman.forEach(halaman => {
+      halaman.classList.remove('halaman-aktif');
+      halaman.style.display = 'none';
+    });
+    semuaTombol.forEach(btn => btn.classList.remove('active'));
+
+    var targetHalaman = document.getElementById(namaHalaman);
+    targetHalaman.classList.add('halaman-aktif');
+    targetHalaman.style.display = 'block';
+
+    document.getElementById('nav-' + namaHalaman).classList.add('active');
+
+    // Scroll ke atas saat pindah halaman
+    window.scrollTo(0, 0); 
+
+    Motion.animate(targetHalaman, 
+      { opacity: [0, 1], transform: ["translateY(20px)", "translateY(0px)"] }, 
+      { duration: 0.5, easing: "ease-out" }
+    );
+
+    setTimeout(() => {
+      ScrollTrigger.refresh();
+      gsap.set('.card, .bingkai-foto', { clearProps: "all" });
+      initAnimasiScroll(); 
+    }, 100);
+  }
+
+  // 5. Fungsi Ganti Bahasa
+  let bahasaSekarang = 'id'; 
+  
+  function gantiBahasa() {
+    if (bahasaSekarang === 'id') {
+      bahasaSekarang = 'en'; 
+      document.getElementById('btn-bahasa').innerText = '🌐 ID';
+      document.getElementById('gambar-resep').src = 'https://i.ibb.co.com/bjFgkZMn/IMG-20261123-WA0003.jpg';
+    } else {
+      bahasaSekarang = 'id'; 
+      document.getElementById('btn-bahasa').innerText = '🌐 EN';
+      document.getElementById('gambar-resep').src = 'https://i.ibb.co.com/JR9bMHbN/IMG-20261123-WA0002.jpg';
+    }
+
+    var elemenTeks = document.querySelectorAll('[data-id]');
+    for (var i = 0; i < elemenTeks.length; i++) {
+      if (bahasaSekarang === 'en') {
+        elemenTeks[i].innerHTML = elemenTeks[i].getAttribute('data-en');
+      } else {
+        elemenTeks[i].innerHTML = elemenTeks[i].getAttribute('data-id');
+      }
+    }
+  }
+
+  // 6. Fungsi Toggle Mode Gelap (Dark Mode)
+  function toggleMode() {
+    var body = document.body;
+    body.classList.toggle('dark-mode');
+    
+    var btnMode = document.getElementById('btn-mode');
+    if (body.classList.contains('dark-mode')) {
+      btnMode.innerText = '☀️'; // Ganti ikon ke Matahari (buat balik ke terang)
+    } else {
+      btnMode.innerText = '🌙'; // Ganti ikon ke Bulan (buat ke gelap)
+    }
+  }
+</script>
+
+</body>
+</html>
